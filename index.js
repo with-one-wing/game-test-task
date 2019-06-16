@@ -2,10 +2,12 @@ const START_BUBBLE_AMOUNT = 10;
 
 const BAD_HEALTH_MIN  = 3.5;
 const GOOD_HEALTH_MIN  = 7.5;
+const TICK_HEALTH_MIN = -4.05;
+const TICK_HEALTH_MAX = 5.01;
 
 function randomIntFromInterval(min, max) // min and max included
 {
-    return Math.floor(Math.random()*(max-min+1)+min);
+    return Math.random() * (max - min) + min;
 }
 
 function randomString() {
@@ -89,6 +91,15 @@ const rerenderBubbleElem = (bubble, container) => {
     const elemBubble = document.getElementById(bubble.id);
     const {top, left} = calculateBubbleCoords(xArea, yArea, bubble);
 
+    let color = 'yellow';
+    if (bubble.health <= BAD_HEALTH_MIN) {
+        color = 'red';
+    } else if (bubble.health >= GOOD_HEALTH_MIN) {
+        color = 'green';
+    }
+
+    elemBubble.style.backgroundColor = color;
+
     elemBubble.style.top = top;
     elemBubble.style.left = left;
 }
@@ -115,11 +126,17 @@ function startGame(area) {
     const t = setInterval(() => {
         const container = document.getElementById('area-container');
 
-        area.bubbles = area.bubbles.map(({usedSubscriptionDays, lastContactedDays, ...b}) => {
+        area.bubbles = area.bubbles.map(({usedSubscriptionDays,lastContactedDays,health, ...b}) => {
             const lastContactedDaysValue = lastContactedDays + 6;
             const usedSubscriptionDaysValue = usedSubscriptionDays + 6;
-
-            return { ...b,lastContactedDays: lastContactedDaysValue,  usedSubscriptionDays: usedSubscriptionDaysValue >=360 ? 0: usedSubscriptionDays }
+            const healthValue = health +  randomIntFromInterval(TICK_HEALTH_MIN, TICK_HEALTH_MAX);
+console.log(health);
+            return {
+                ...b,
+                lastContactedDays: lastContactedDaysValue,
+                usedSubscriptionDays: usedSubscriptionDaysValue >=360 ? 0: usedSubscriptionDays,
+                health: healthValue<= 0 ? 0 : healthValue >= 10 ? 10: healthValue ,
+            }
         }).filter((b) => {
             if(b.lastContactedDays < 30) {
                 return true

@@ -5,6 +5,8 @@ const GOOD_HEALTH_MIN  = 7.5;
 const TICK_HEALTH_MIN = -4.05;
 const TICK_HEALTH_MAX = 5.01;
 
+let gameScore = 0;
+
 function randomIntFromInterval(min, max) // min and max included
 {
     return Math.random() * (max - min) + min;
@@ -130,7 +132,7 @@ function startGame(area) {
             const lastContactedDaysValue = lastContactedDays + 6;
             const usedSubscriptionDaysValue = usedSubscriptionDays + 6;
             const healthValue = health +  randomIntFromInterval(TICK_HEALTH_MIN, TICK_HEALTH_MAX);
-console.log(health);
+
             return {
                 ...b,
                 lastContactedDays: lastContactedDaysValue,
@@ -138,14 +140,16 @@ console.log(health);
                 health: healthValue<= 0 ? 0 : healthValue >= 10 ? 10: healthValue ,
             }
         }).filter((b) => {
-            if(b.lastContactedDays < 30) {
+            if(b.lastContactedDays < 30  &&( b.usedSubscriptionDays > 0 || b.health != BAD_HEALTH_MIN)) {
                 return true
             }
 
             removeBubbleElem(b);
             return false;
         });
-
+        gameScore += area.bubbles.length;
+        const score = document.getElementById('score-value');
+        score.innerText = gameScore;
         area.bubbles.forEach(bubble => {
             rerenderBubbleElem(bubble, container);
         });

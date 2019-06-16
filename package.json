@@ -1,0 +1,11 @@
+{
+  "name": "test-task",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/with-one-wing/test-task.git",
+  "author": "Viktor Voitenko <viktor.voitenko@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

@@ -1,8 +1,8 @@
 const START_BUBBLE_AMOUNT = 10;
 const BAD_HEALTH_MIN  = 3.5;
 const GOOD_HEALTH_MIN  = 7.5;
-const TICK_HEALTH_MIN = -4.05;
-const TICK_HEALTH_MAX = 5.01;
+const TICK_HEALTH_MIN = -0.05;
+const TICK_HEALTH_MAX = 0.01;
 let gameScore = 0;
 
 const randomIntFromInterval = (min, max) => Math.random() * (max - min) + min;
@@ -64,15 +64,13 @@ const calculateBubbleCoords = (xArea, yArea, bubble) => {
 const drawGameArea = (area, options) =>  {
     const container = document.getElementById('area-container');
 
-    getAreaSize(container);
-
     const {xArea, yArea} = getAreaSize(container);
     const children = area.bubbles.map(bubble => createBubbleElement(bubble, xArea, yArea, options.onBubbleClick));
 
     children.forEach(child => container.appendChild(child));
 };
 const rerenderBubbleElem = (bubble, container) => {
-    getAreaSize(container)
+    getAreaSize(container);
     const {xArea, yArea} = getAreaSize(container);
     const elemBubble = document.getElementById(bubble.id);
     const {top, left} = calculateBubbleCoords(xArea, yArea, bubble);
@@ -109,7 +107,7 @@ const startGame = (area) => {
     const t = setInterval(() => {
         const container = document.getElementById('area-container');
 
-        area.bubbles = area.bubbles.map(({usedSubscriptionDays,lastContactedDays,health, ...b}) => {
+        area.bubbles = area.bubbles.map(({usedSubscriptionDays, lastContactedDays, health, ...b}) => {
             const lastContactedDaysValue = lastContactedDays + 6;
             const usedSubscriptionDaysValue = usedSubscriptionDays + 6;
             const healthValue = health +  randomIntFromInterval(TICK_HEALTH_MIN, TICK_HEALTH_MAX);
@@ -117,7 +115,7 @@ const startGame = (area) => {
             return {
                 ...b,
                 lastContactedDays: lastContactedDaysValue,
-                usedSubscriptionDays: usedSubscriptionDaysValue >=360 ? 0: usedSubscriptionDays,
+                usedSubscriptionDays: usedSubscriptionDaysValue >=360 ? 0: usedSubscriptionDaysValue,
                 health: healthValue<= 0 ? 0 : healthValue >= 10 ? 10: healthValue ,
             }
         }).filter((b) => {
